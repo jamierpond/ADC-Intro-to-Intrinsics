@@ -4,8 +4,7 @@
 MainComponent::MainComponent()
 {
 
-    addAndMakeVisible(racerNormal);
-    addAndMakeVisible(racerOptimized);
+    addAndMakeVisible(racer);
 
     setSize (600, 400);
 }
@@ -25,7 +24,11 @@ void MainComponent::resized()
     auto leftBounds = getLocalBounds().removeFromRight(getLocalBounds().getWidth() / 2);
     auto rightBounds = getLocalBounds().removeFromLeft(getLocalBounds().getWidth() / 2);
 
-    racerNormal.setBounds(leftBounds);
-    racerOptimized.setBounds(rightBounds);
+    racer.setBounds(getLocalBounds());
 
+}
+
+bool MainComponent::isTimerRunning()
+{
+    return racer.isTimerRunning();
 }
