@@ -19,10 +19,9 @@ enum AlgoChoice
     HandCodedSIMD,
 };
 
-
-struct ButtonPanel : juce::Component
+struct ControlPanel : juce::Component
 {
-    ButtonPanel()
+    ControlPanel() : numIterationsSlider(juce::Slider::SliderStyle::IncDecButtons, juce::Slider::TextBoxBelow)
     {
         startButton.setButtonText("Start");
         resetButton.setButtonText("Reset");
@@ -33,10 +32,27 @@ struct ButtonPanel : juce::Component
         algoChoice.addItem("Hand coded x86/x64 SIMD", 3);
         algoChoice.setSelectedId(1, false);
 
+
+        int oneMillion = 1000000;
+        numIterationsSlider.setRange(oneMillion, 100000000000, oneMillion);
+        numIterationsSlider.setNumDecimalPlacesToDisplay(0);
+        
+
+        bufferSizeChoice.addItem("64", 1);
+        bufferSizeChoice.addItem("128", 2);
+        bufferSizeChoice.addItem("256", 3);
+        bufferSizeChoice.addItem("512", 4);
+        bufferSizeChoice.addItem("1024", 5);
+        bufferSizeChoice.addItem("2048", 6);
+        bufferSizeChoice.addItem("4096", 7);
+        bufferSizeChoice.addItem("8192", 8);
+
+
         addAndMakeVisible(startButton);
-        addAndMakeVisible(resetButton);
         addAndMakeVisible(stopButton);
         addAndMakeVisible(algoChoice);
+        addAndMakeVisible(numIterationsSlider);
+        addAndMakeVisible(bufferSizeChoice);
     }
 
     void paint(juce::Graphics& g)
@@ -56,16 +72,18 @@ struct ButtonPanel : juce::Component
         juce::Grid background;
         background.templateRows = { Track(Fr(1)) };
 
-        background.templateColumns = { Track(Fr(1)), Track(Fr(1)), Track(Fr(1)), Track(Fr(1)) };
-        background.items = { juce::GridItem(startButton),
-                             juce::GridItem(resetButton),
+        background.templateColumns = { Track(Fr(1)), Track(Fr(1)), Track(Fr(1)), Track(Fr(1)), Track(Fr(1)) };
+        background.items = { juce::GridItem(startButton), 
                              juce::GridItem(stopButton),
-                             juce::GridItem(algoChoice) };
+                             juce::GridItem(algoChoice),
+                             juce::GridItem(numIterationsSlider),
+                             juce::GridItem(bufferSizeChoice) };
         background.performLayout(bounds);
     }
 
     juce::TextButton startButton, stopButton, resetButton;
-    juce::ComboBox algoChoice;
+    juce::ComboBox algoChoice, bufferSizeChoice;
+    juce::Slider numIterationsSlider;
 };
 
 struct TimerDisplayPanel : juce::Component
@@ -103,47 +121,63 @@ struct CodeRunnerThread : juce::Thread
 {
     CodeRunnerThread() : juce::Thread("CodeRunnerThread")
     {
-        someRandomData.resize(bufferSize);
-        someMoreRandomData.resize(bufferSize);
-        output.resize(bufferSize);
+        resizeBuffers(bufferSize);
     }
 
     void setAlgorithmChoice(int algToSet)
     {
         algoChoice = algToSet;
     }
-    
+
+    void prepareForRun()
+    {
+        hasCompletedTask = false;
+    }
 
     void run() override
     {
-        numIterationsDone = 0;
+        size_t numIterationsToDo = targetNumIterations;
 
-        shouldStop = false;
- 
-        while (!shouldStop)
+        while (numIterationsToDo-- > 0)
         {
-            if (algoChoice == HandCodedSIMD)
-                complex_vector_hand_mul_deinterleaved(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
+            if (algoChoice == NoOptimization)
+                noOptComplexMult(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
             else if (algoChoice == JuceFloatVector)
-                NOTOPTIMIZEDcomplex_vector_hand_mul_deinterleaved(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
-            else if (algoChoice == NoOptimization)
-                TOTALLYNOTOPTIMIZEDcomplex_vector_hand_mul_deinterleaved(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
+                juceVectorComplexMult(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
+            else if (algoChoice == HandCodedSIMD)
+                    simdComplexMult(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
             else {}
-            numIterationsDone++;
         }
+
+        hasCompletedTask = true;
+    }
+
+    void setNumIterationsToDo(int todo)
+    {
+        targetNumIterations = todo;
+    }
+
+    void resizeBuffers(int newBufferSize)
+    {
+        someRandomData.resize(newBufferSize);
+        someMoreRandomData.resize(newBufferSize);
+        output.resize(newBufferSize);
+    }
+
+    int getTargetNumIterations()
+    {
+        return targetNumIterations;
     }
 
     float outputRealNyq;
     float outputImagNyq;
-    inline void complex_vector_hand_mul_deinterleaved(float* __restrict output,
+    inline void simdComplexMult(float* __restrict output,
         float* __restrict left,
         float* __restrict right,
         int numElements)
     {
         const int halfSize = numElements / 2;
         const int numSIMDInstructions = halfSize / 8;
-
-        
 
         // Get the 0th bin thing done nicely.
         outputRealNyq = *output + *(left) * *(right);
@@ -179,7 +213,7 @@ struct CodeRunnerThread : juce::Thread
         *(output + halfSize) = outputImagNyq;
     }
 
-    inline void TOTALLYNOTOPTIMIZEDcomplex_vector_hand_mul_deinterleaved(float* __restrict output,
+    inline void noOptComplexMult(float* __restrict output,
         const float* __restrict left,
         const float* __restrict right,
         int numElements)
@@ -204,7 +238,7 @@ struct CodeRunnerThread : juce::Thread
     }
 
 
-    inline void NOTOPTIMIZEDcomplex_vector_hand_mul_deinterleaved(float* __restrict output,
+    inline void juceVectorComplexMult(float* __restrict output,
         const float* __restrict left,
         const float* __restrict right,
         int numElements)
@@ -247,11 +281,15 @@ struct CodeRunnerThread : juce::Thread
         return numIterationsDone;
     }
 
-    int bufferSize = 2048;
+    int bufferSize = 4096;
     
     std::atomic<bool> shouldStop{ false };
     bool shouldRunOptimized = true;
     size_t numIterationsDone = 0;
+
+    bool hasCompletedTask = true;
+
+    size_t targetNumIterations = 100000;
 
     int algoChoice = AlgoChoice::NoOptimization;
 
@@ -282,21 +320,34 @@ struct DragRacer : juce::Component, juce::Timer
         notificationPopup("Performance Notification", juce::Colours::darkgrey, true)
     {
         addAndMakeVisible(timerDisplay);
-        addAndMakeVisible(buttons);
+        addAndMakeVisible(controlPanel);
 
-        buttons.startButton.onClick = [this]()
+        controlPanel.startButton.onClick = [this]()
         {
             reset();
             startTimerHz(30);
-            codeRunnerThread.startThread(9);
+            codeRunnerThread.prepareForRun();
+            codeRunnerThread.startThread(juce::Thread::realtimeAudioPriority);
         };
 
-        buttons.algoChoice.onChange = [this]()
+        controlPanel.algoChoice.onChange = [this]()
         {
-            codeRunnerThread.setAlgorithmChoice(buttons.algoChoice.getSelectedIdAsValue().getValue());
+            codeRunnerThread.setAlgorithmChoice(controlPanel.algoChoice.getSelectedIdAsValue().getValue());
         };
 
-        buttons.stopButton.onClick = [this]()
+        controlPanel.bufferSizeChoice.onChange = [this]()
+        {
+            int newBufferSize = int(powf(2, 5 + (int)controlPanel.bufferSizeChoice.getSelectedIdAsValue().getValue()));
+            DBG(newBufferSize);
+            codeRunnerThread.resizeBuffers(newBufferSize);
+        };
+
+        controlPanel.numIterationsSlider.onValueChange = [this]()
+        {
+            codeRunnerThread.setNumIterationsToDo(controlPanel.numIterationsSlider.getValue());
+        };
+
+        controlPanel.stopButton.onClick = [this]()
         {
             stop();
         };
@@ -305,12 +356,9 @@ struct DragRacer : juce::Component, juce::Timer
     void stop()
     {
         stopTimer();
-        codeRunnerThread.signalToStop();
         timerDisplay.repaint();
-        auto numIterationsStr = juce::String(codeRunnerThread.getNumIterationsDone());
-        performanceStatus.numIterations = numIterationsStr;
-        juce::SystemClipboard::copyTextToClipboard(numIterationsStr);
         performanceStatus.numSecondsCompletedIn = juce::String(numMsSecondsPassed / 1000.0f);
+        performanceStatus.numIterations = juce::String(codeRunnerThread.getTargetNumIterations());
         notificationPopup.showDialog("Performance Overview", &performanceStatus, this, juce::Colours::black, true);
     }
 
@@ -324,7 +372,7 @@ struct DragRacer : juce::Component, juce::Timer
         auto bounds = getLocalBounds();
 
         auto buttonBounds = bounds.removeFromBottom(bounds.getHeight() * 0.1);
-        buttons.setBounds(buttonBounds);
+        controlPanel.setBounds(buttonBounds);
 
         timerDisplay.setBounds(bounds);
         performanceStatus.setBounds(getLocalBounds());
@@ -333,7 +381,7 @@ struct DragRacer : juce::Component, juce::Timer
     void timerCallback() override
     {
         numMsSecondsPassed += getTimerInterval();
-        if (numMsSecondsPassed > numSecondsToTest * 1000.0f)
+        if (codeRunnerThread.hasCompletedTask)
         {
             stop();
         }
@@ -348,7 +396,7 @@ struct DragRacer : juce::Component, juce::Timer
 
     TimerDisplayPanel timerDisplay;
 
-    ButtonPanel buttons;
+    ControlPanel controlPanel;
 
     CodeRunnerThread codeRunnerThread;
 

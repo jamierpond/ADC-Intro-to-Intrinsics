@@ -3,7 +3,6 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-
     addAndMakeVisible(racer);
 
     setSize (600, 400);
