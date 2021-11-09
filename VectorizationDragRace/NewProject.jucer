@@ -23,7 +23,8 @@
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2019 targetFolder="Builds/VisualStudio2019" extraCompilerFlags="-mavx">
+    <VS2019 targetFolder="Builds/VisualStudio2019" extraCompilerFlags="-mavx"
+            IPP1ALibrary="true">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="ConvolutionOptimization_Debug"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="ConvolutionOptimization_Release"/>
