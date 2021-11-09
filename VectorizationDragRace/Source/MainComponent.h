@@ -1,7 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "CounterTimerComponent.h"
+#include "MainPanel.h"
 
 //==============================================================================
 /*
@@ -19,13 +19,11 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-    bool isTimerRunning();
-
 private:
     //==============================================================================
     // Your private member variables go here...
 
-    DragRacer racer;
+    MainPanel racer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

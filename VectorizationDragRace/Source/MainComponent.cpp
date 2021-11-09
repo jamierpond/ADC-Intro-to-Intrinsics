@@ -26,8 +26,3 @@ void MainComponent::resized()
     racer.setBounds(getLocalBounds());
 
 }
-
-bool MainComponent::isTimerRunning()
-{
-    return racer.isTimerRunning();
-}

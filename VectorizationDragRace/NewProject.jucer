@@ -5,17 +5,25 @@
               jucerFormatVersion="1">
   <MAINGROUP id="XF0KLM" name="ConvolutionOptimization">
     <GROUP id="{DDF95B6C-BBD6-8538-1277-BCFEB011DCCC}" name="Source">
-      <FILE id="QPO5a2" name="CounterTimerComponent.h" compile="0" resource="0"
-            file="Source/CounterTimerComponent.h"/>
+      <GROUP id="{124D212F-96C9-EE06-E33B-5FDBEC1EE350}" name="GUI">
+        <FILE id="gXh4kR" name="PerformanceStatusPopup.h" compile="0" resource="0"
+              file="Source/PerformanceStatusPopup.h"/>
+        <FILE id="QPO5a2" name="MainPanel.h" compile="0" resource="0" file="Source/MainPanel.h"/>
+        <FILE id="NascG1" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
+        <FILE id="brNdw8" name="TimerDisplayPanel.h" compile="0" resource="0"
+              file="Source/TimerDisplayPanel.h"/>
+      </GROUP>
       <FILE id="VTle20" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="TVu9VA" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="pH9tDN" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+      <FILE id="gkLidk" name="CodeRunnerThread.h" compile="0" resource="0"
+            file="Source/CodeRunnerThread.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2019 targetFolder="Builds/VisualStudio2019">
+    <VS2019 targetFolder="Builds/VisualStudio2019" extraCompilerFlags="-mavx">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="ConvolutionOptimization_Debug"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="ConvolutionOptimization_Release"/>
