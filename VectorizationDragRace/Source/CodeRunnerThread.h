@@ -43,6 +43,9 @@ struct CodeRunnerThread : juce::Thread
 
         while (numIterationsToDo-- > 0)
         {
+            if (threadShouldExit())
+                return;
+
             if (algoChoice == NoOptimization)
                 noOptComplexMult(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
             else if (algoChoice == JuceFloatVector)

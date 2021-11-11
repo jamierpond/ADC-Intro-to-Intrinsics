@@ -64,6 +64,12 @@ struct MainPanel : juce::Component, juce::Timer
     void stop()
     {
         stopTimer();
+        if (!codeRunnerThread.stopThread(3000)) // Wait up to three seconds, this shouldn't take long!
+        {
+            DBG("Thread exit timeout!");
+            jassertfalse;
+        }
+            
         timerDisplay.repaint();
         performanceStatus.numSecondsCompletedIn = juce::String(numMsSecondsPassed / 1000.0f);
         performanceStatus.numIterations = juce::String(codeRunnerThread.getTargetNumIterations());
