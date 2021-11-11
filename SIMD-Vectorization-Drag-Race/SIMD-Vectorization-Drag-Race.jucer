@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="k0AQ0W" name="ConvolutionOptimization" projectType="guiapp"
+              useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
+              jucerFormatVersion="1">
+  <MAINGROUP id="XF0KLM" name="ConvolutionOptimization">
+    <GROUP id="{DDF95B6C-BBD6-8538-1277-BCFEB011DCCC}" name="Source">
+      <GROUP id="{84EB0D0D-A5AC-3E89-B405-BB1619C3EA61}" name="SIMD Functions">
+        <FILE id="c6CIZN" name="ComplexMultiplicationFunctions.h" compile="0"
+              resource="0" file="../SIMD Functions/ComplexMultiplicationFunctions.h"/>
+        <FILE id="Xrr3mc" name="MultiplyAddFunctions.h" compile="0" resource="0"
+              file="../SIMD Functions/MultiplyAddFunctions.h"/>
+        <FILE id="rzPP3m" name="PondSIMDFunctions.h" compile="0" resource="0"
+              file="../SIMD Functions/PondSIMDFunctions.h"/>
+        <FILE id="rdsbTS" name="SIMDBasics.h" compile="0" resource="0" file="../SIMD Functions/SIMDBasics.h"/>
+        <FILE id="q9Agsw" name="SIMDHelpers.h" compile="0" resource="0" file="../SIMD Functions/SIMDHelpers.h"/>
+      </GROUP>
+      <GROUP id="{124D212F-96C9-EE06-E33B-5FDBEC1EE350}" name="GUI">
+        <FILE id="gXh4kR" name="PerformanceStatusPopup.h" compile="0" resource="0"
+              file="Source/PerformanceStatusPopup.h"/>
+        <FILE id="QPO5a2" name="MainPanel.h" compile="0" resource="0" file="Source/MainPanel.h"/>
+        <FILE id="NascG1" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
+        <FILE id="brNdw8" name="TimerDisplayPanel.h" compile="0" resource="0"
+              file="Source/TimerDisplayPanel.h"/>
+      </GROUP>
+      <FILE id="VTle20" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="TVu9VA" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="pH9tDN" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="gkLidk" name="CodeRunnerThread.h" compile="0" resource="0"
+            file="Source/CodeRunnerThread.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <EXPORTFORMATS>
+    <VS2019 targetFolder="Builds/VisualStudio2019" extraCompilerFlags="-mavx"
+            IPP1ALibrary="true">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="ConvolutionOptimization_Debug"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="ConvolutionOptimization_Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Documents/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>

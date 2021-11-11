@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="QU9Y1R" name="SIMD-Hello-World" projectType="consoleapp"
+              useAppConfig="0" addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1"
+              displaySplashScreen="1">
+  <MAINGROUP id="IxGZgr" name="SIMD-Hello-World">
+    <GROUP id="{4D3D2028-071B-978D-DF60-C5D3E4ACE60B}" name="Source">
+      <GROUP id="{3D1B347F-3644-354B-8837-B15677A60C55}" name="SIMD Functions">
+        <FILE id="nyQiOL" name="ComplexMultiplicationFunctions.h" compile="0"
+              resource="0" file="../SIMD Functions/ComplexMultiplicationFunctions.h"/>
+        <FILE id="lOO8wO" name="MultiplyAddFunctions.h" compile="0" resource="0"
+              file="../SIMD Functions/MultiplyAddFunctions.h"/>
+        <FILE id="jBkeg1" name="PondSIMDFunctions.h" compile="0" resource="0"
+              file="../SIMD Functions/PondSIMDFunctions.h"/>
+        <FILE id="bEAP4K" name="SIMDBasics.h" compile="0" resource="0" file="../SIMD Functions/SIMDBasics.h"/>
+        <FILE id="oqh8kI" name="SIMDHelpers.h" compile="0" resource="0" file="../SIMD Functions/SIMDHelpers.h"/>
+      </GROUP>
+      <FILE id="n4UFiv" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <EXPORTFORMATS>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="SIMD-Hello-World"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SIMD-Hello-World"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Documents/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+</JUCERPROJECT>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="Mi9jYV" name="SIMD-Pond-Convolution" projectType="audioplug"
+              useAppConfig="0" addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1"
+              pluginFormats="buildVST" displaySplashScreen="1">
+  <MAINGROUP id="fMV1Uz" name="SIMD-Pond-Convolution">
+    <GROUP id="{3EFE6EA7-5626-10FF-7DE3-985D6E3EFBCD}" name="Source">
+      <GROUP id="{2684AA33-C853-9C1B-C0F8-CDB7130598F8}" name="SIMD Functions">
+        <FILE id="c9xhcs" name="ComplexMultiplicationFunctions.h" compile="0"
+              resource="0" file="../SIMD Functions/ComplexMultiplicationFunctions.h"/>
+        <FILE id="Rb93hc" name="MultiplyAddFunctions.h" compile="0" resource="0"
+              file="../SIMD Functions/MultiplyAddFunctions.h"/>
+        <FILE id="lCHgVh" name="PondSIMDFunctions.h" compile="0" resource="0"
+              file="../SIMD Functions/PondSIMDFunctions.h"/>
+        <FILE id="akbbfl" name="SIMDBasics.h" compile="0" resource="0" file="../SIMD Functions/SIMDBasics.h"/>
+        <FILE id="PRfoVo" name="SIMDHelpers.h" compile="0" resource="0" file="../SIMD Functions/SIMDHelpers.h"/>
+      </GROUP>
+      <GROUP id="{2723CF95-84B7-7DF2-3DED-0F5D04C04832}" name="Impulse Responses">
+        <FILE id="By4rd3" name="emt140_plate.wav" compile="0" resource="1"
+              file="Source/Assets/emt140_plate.wav"/>
+        <FILE id="XbzQL1" name="superlong_ir.wav" compile="0" resource="1"
+              file="Source/Assets/superlong_ir.wav"/>
+        <FILE id="hqni9N" name="unitImpulse.wav" compile="0" resource="1" file="Source/Assets/unitImpulse.wav"/>
+      </GROUP>
+      <GROUP id="{6BE3F317-BB08-0347-AE68-23D393991834}" name="pffft-master">
+        <GROUP id="{BD952703-C7A9-AD18-66D6-B98BD5D4B9B7}" name="simd">
+          <FILE id="LtqPBY" name="pf_altivec_float.h" compile="0" resource="0"
+                file="Source/pffft-master/simd/pf_altivec_float.h"/>
+          <FILE id="SjzLvT" name="pf_avx_double.h" compile="0" resource="0" file="Source/pffft-master/simd/pf_avx_double.h"/>
+          <FILE id="WbiqLC" name="pf_double.h" compile="0" resource="0" file="Source/pffft-master/simd/pf_double.h"/>
+          <FILE id="rfJOSw" name="pf_float.h" compile="0" resource="0" file="Source/pffft-master/simd/pf_float.h"/>
+          <FILE id="OAzpAy" name="pf_neon_double.h" compile="0" resource="0"
+                file="Source/pffft-master/simd/pf_neon_double.h"/>
+          <FILE id="drQwgP" name="pf_neon_double_from_avx.h" compile="0" resource="0"
+                file="Source/pffft-master/simd/pf_neon_double_from_avx.h"/>
+          <FILE id="xaCIhy" name="pf_neon_float.h" compile="0" resource="0" file="Source/pffft-master/simd/pf_neon_float.h"/>
+          <FILE id="QEijWA" name="pf_scalar_double.h" compile="0" resource="0"
+                file="Source/pffft-master/simd/pf_scalar_double.h"/>
+          <FILE id="RmvF32" name="pf_scalar_float.h" compile="0" resource="0"
+                file="Source/pffft-master/simd/pf_scalar_float.h"/>
+          <FILE id="yilFiN" name="pf_sse1_float.h" compile="0" resource="0" file="Source/pffft-master/simd/pf_sse1_float.h"/>
+          <FILE id="IUmdu0" name="pf_sse2_double.h" compile="0" resource="0"
+                file="Source/pffft-master/simd/pf_sse2_double.h"/>
+        </GROUP>
+        <FILE id="SRnqnk" name="fftpack.c" compile="1" resource="0" file="Source/pffft-master/fftpack.c"/>
+        <FILE id="aGNRsc" name="fftpack.h" compile="0" resource="0" file="Source/pffft-master/fftpack.h"/>
+        <FILE id="iogyNW" name="fmv.h" compile="0" resource="0" file="Source/pffft-master/fmv.h"/>
+        <FILE id="ERLsFg" name="pf_carrier.cpp" compile="1" resource="0" file="Source/pffft-master/pf_carrier.cpp"/>
+        <FILE id="Sqmkyu" name="pf_carrier.h" compile="0" resource="0" file="Source/pffft-master/pf_carrier.h"/>
+        <FILE id="oRYK0a" name="pf_cic.cpp" compile="1" resource="0" file="Source/pffft-master/pf_cic.cpp"/>
+        <FILE id="cwMrxS" name="pf_cic.h" compile="0" resource="0" file="Source/pffft-master/pf_cic.h"/>
+        <FILE id="VVzDuj" name="pf_mixer.cpp" compile="1" resource="0" file="Source/pffft-master/pf_mixer.cpp"/>
+        <FILE id="LC0xzT" name="pf_mixer.h" compile="0" resource="0" file="Source/pffft-master/pf_mixer.h"/>
+        <FILE id="F8ODrW" name="pffastconv.c" compile="1" resource="0" file="Source/pffft-master/pffastconv.c"/>
+        <FILE id="tBHBaE" name="pffastconv.h" compile="0" resource="0" file="Source/pffft-master/pffastconv.h"/>
+        <FILE id="jH7SaS" name="pffft.c" compile="1" resource="0" file="Source/pffft-master/pffft.c"/>
+        <FILE id="aF4udr" name="pffft.h" compile="0" resource="0" file="Source/pffft-master/pffft.h"/>
+        <FILE id="voRXck" name="pffft.hpp" compile="0" resource="0" file="Source/pffft-master/pffft.hpp"/>
+        <FILE id="lwbUI8" name="pffft_common.c" compile="1" resource="0" file="Source/pffft-master/pffft_common.c"/>
+        <FILE id="oFogbr" name="pffft_double.c" compile="1" resource="0" file="Source/pffft-master/pffft_double.c"/>
+        <FILE id="pfrGdw" name="pffft_double.h" compile="0" resource="0" file="Source/pffft-master/pffft_double.h"/>
+        <FILE id="tnku9J" name="pffft_priv_impl.h" compile="0" resource="0"
+              file="Source/pffft-master/pffft_priv_impl.h"/>
+        <FILE id="HthoVk" name="sse2neon.h" compile="0" resource="0" file="Source/pffft-master/sse2neon.h"/>
+      </GROUP>
+      <GROUP id="{E92926B9-81A7-C2A3-DB25-C1D093EEA981}" name="ConvolutionDSP">
+        <FILE id="J3b63Z" name="CircularBuffer.h" compile="0" resource="0"
+              file="Source/CircularBuffer.h"/>
+        <FILE id="MXik5r" name="ConvolutionUtilities.h" compile="0" resource="0"
+              file="Source/ConvolutionUtilities.h"/>
+        <FILE id="CSqacL" name="FdlConvolution.cpp" compile="1" resource="0"
+              file="Source/FdlConvolution.cpp"/>
+        <FILE id="S9Rffv" name="FdlConvolution.h" compile="0" resource="0"
+              file="Source/FdlConvolution.h"/>
+        <FILE id="URYa8c" name="ImpulseResponseSegment.h" compile="0" resource="0"
+              file="Source/ImpulseResponseSegment.h"/>
+      </GROUP>
+      <FILE id="uuxNrF" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="lDvGoL" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="POaZV9" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="CDTN8n" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2019 targetFolder="Builds/VisualStudio2019" extraCompilerFlags="-mavx&#10;/fp:fast&#10;/Oi"
+            IPP1ALibrary="true">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="SIMD-Pond-Convolution" enablePluginBinaryCopyStep="1"
+                       vstBinaryLocation="C:/vstplugins"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SIMD-Pond-Convolution"
+                       enablePluginBinaryCopyStep="1" vstBinaryLocation="C:/vstplugins"
+                       alwaysGenerateDebugSymbols="0" optimisation="4"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../SDKs/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../SDKs/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
