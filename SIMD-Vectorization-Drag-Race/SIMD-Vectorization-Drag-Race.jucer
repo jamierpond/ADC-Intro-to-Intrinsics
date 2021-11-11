@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="k0AQ0W" name="ConvolutionOptimization" projectType="guiapp"
+<JUCERPROJECT id="k0AQ0W" name="SIMD-Vectorization-Drag-Race" projectType="guiapp"
               useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
               jucerFormatVersion="1">
-  <MAINGROUP id="XF0KLM" name="ConvolutionOptimization">
+  <MAINGROUP id="XF0KLM" name="SIMD-Vectorization-Drag-Race">
     <GROUP id="{DDF95B6C-BBD6-8538-1277-BCFEB011DCCC}" name="Source">
       <GROUP id="{84EB0D0D-A5AC-3E89-B405-BB1619C3EA61}" name="SIMD Functions">
         <FILE id="c6CIZN" name="ComplexMultiplicationFunctions.h" compile="0"

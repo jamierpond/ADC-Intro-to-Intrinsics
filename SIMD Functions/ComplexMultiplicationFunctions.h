@@ -83,13 +83,14 @@ inline void juceVectorComplexMult(float* __restrict output,
 inline void complexMultiplicationSIMD(float* __restrict output,
                                       const float*  __restrict left,
                                       const float* const __restrict right,
-                                      int numElements)
+                                      int numElements,
+                                      float& tempFloatA, float& tempFloatB)
 {
     const int halfSize = numElements / 2;
 
     // We have to do this first because for speed we'll overwrite these values and add them on later. 
-    float outputRealNyq = output[0] + left[0] * right[0];
-    float outputImagNyq = output[0 + halfSize] + left[0 + halfSize] * right[0 + halfSize];
+    tempFloatA = output[0] + left[0] * right[0];
+    tempFloatB = output[0 + halfSize] + left[0 + halfSize] * right[0 + halfSize];
 
     auto* outputReal = getSIMDPointer(output);
     auto* outputImag = getSIMDPointer(output + halfSize);
@@ -112,20 +113,21 @@ inline void complexMultiplicationSIMD(float* __restrict output,
     }
 
     // Take care of the 0th bin/Nyquist thing from earlier. 
-    output[0] = outputRealNyq;
-    output[halfSize] = outputImagNyq;
+    output[0] = tempFloatA;
+    output[halfSize] = tempFloatB;
 }
 
 inline void complexMultiplication(float* __restrict output,
                                   const float* __restrict left,
                                   const float*__restrict right,
                                   int numElements,
-                                  bool useOptimizedCode)
+                                  bool useOptimizedCode,
+                                  float& tempA, float& tempB)
 {
     if (useOptimizedCode)
-        complexMultiplicationSIMD(output, left, right, numElements);
+        complexMultiplicationSIMD(output, left, right, numElements, tempA, tempB);
     else
     {
-        juceVectorComplexMult(output, left, right, numElements);
+        noOptComplexMult(output, left, right, numElements);
     }
 }

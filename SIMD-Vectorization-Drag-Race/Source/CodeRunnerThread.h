@@ -41,6 +41,8 @@ struct CodeRunnerThread : juce::Thread
     {
         size_t numIterationsToDo = targetNumIterations;
 
+        float tempA, tempB;
+
         while (numIterationsToDo-- > 0)
         {
             if (threadShouldExit())
@@ -51,7 +53,7 @@ struct CodeRunnerThread : juce::Thread
             else if (algoChoice == JuceFloatVector)
                 juceVectorComplexMult(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
             else if (algoChoice == HandCodedSIMD)
-                complexMultiplicationSIMD(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize);
+                complexMultiplicationSIMD(output.data(), someRandomData.data(), someMoreRandomData.data(), bufferSize, tempA, tempB);
             else {}
         }
 

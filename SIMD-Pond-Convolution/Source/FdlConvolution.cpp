@@ -37,6 +37,8 @@ void FdlConvolver::process(int cachedInputBufferPointer,
         deinterleave(reinterpret_cast<float*>(fdl[mWritePosition][channel].data()),
             reinterpret_cast<float*>(interleavedComplex.data()), mFftSize);
 
+
+        float tempA, tempB; // helper floats for the convolution, allocating here for efficiency!
         // Iterate over all active slots in the FDL, and perform the relevant Cmadd operations. 
         // This adds the info into the outputData complex vector.
         for (int slot = 0; slot < numActiveSlots; slot++)
@@ -44,10 +46,11 @@ void FdlConvolver::process(int cachedInputBufferPointer,
             // TODO try deinterleaved, but with that simd pragma. 
             const int slotToUse = modulo(mReadPosition - slot, numActiveSlots);
             complexMultiplication(reinterpret_cast<float*>(outputData.data()),
-                (fdl[slotToUse][channel].data()),
-                (irSegments[slot]->complexPartition[channel].data()),
-                mFftSize,
-                shouldUseOptimizedFunction);
+                                 (fdl[slotToUse][channel].data()),
+                                 (irSegments[slot]->complexPartition[channel].data()),
+                                 mFftSize,
+                                 shouldUseOptimizedFunction, 
+                                 tempA, tempB);
         }
 
         // Interleave the data into complex.h format for pffft. 
