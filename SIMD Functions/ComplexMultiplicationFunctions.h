@@ -80,46 +80,61 @@ inline void juceVectorComplexMult(float* __restrict output,
     juce::FloatVectorOperations::addWithMultiply(outputImag, leftImag, rightReal, halfSize - 1);
 }
 
-inline void complexMultiplicationSIMD(float* __restrict output,
-                                      const float*  __restrict left,
-                                      const float* const __restrict right,
-                                      int numElements,
-                                      float& tempFloatA, float& tempFloatB)
+__forceinline void complexMultiplicationSIMD(float* __restrict output,
+                                             const float* __restrict left,
+                                             const float* __restrict right,
+                                             int numElements,
+                                             float& tempFloatA, float& tempFloatB)
 {
     const int halfSize = numElements / 2;
 
     // We have to do this first because for speed we'll overwrite these values and add them on later. 
     tempFloatA = output[0] + left[0] * right[0];
     tempFloatB = output[0 + halfSize] + left[0 + halfSize] * right[0 + halfSize];
-
-    auto* outputReal = getSIMDPointer(output);
-    auto* outputImag = getSIMDPointer(output + halfSize);
-
-    auto* leftReal   = getConstSIMDPointer(left);
-    auto* leftImag   = getConstSIMDPointer(left + halfSize);
-
-    auto* rightReal  = getConstSIMDPointer(right);
-    auto* rightImag  = getConstSIMDPointer(right + halfSize);
+    float* _output = output;
 
     const int numSIMD = halfSize / 8;
 
+    register __m256 outRe, outIm, leftRe, leftIm, rightRe, rightIm;
+
     for (int i = 0; i < numSIMD; i++)
     {
-        outputReal[i] = _mm256_fmadd_ps(leftReal[i], rightReal[i], outputReal[i]);
-        outputReal[i] = _mm256_sub_ps(outputReal[i], _mm256_mul_ps(leftImag[i], rightImag[i]));
+        // Load values from memory
+        outRe = _mm256_load_ps(output);
+        outIm = _mm256_load_ps(output + halfSize);
 
-        outputImag[i] = _mm256_fmadd_ps(leftReal[i], rightImag[i], outputImag[i]);
-        outputImag[i] = _mm256_fmadd_ps(leftImag[i], rightReal[i], outputImag[i]);
+        leftRe = _mm256_load_ps(left);
+        leftIm = _mm256_load_ps(left + halfSize);
+
+        rightRe = _mm256_load_ps(right);
+        rightIm = _mm256_load_ps(right + halfSize);
+
+        // Perform the multiply adds
+        outRe = _mm256_fmadd_ps(leftRe, rightRe, outRe);   // outRe += leftRe * rightRe
+        outRe = _mm256_fnmadd_ps(leftIm, rightIm, outRe);  // outRe -= leftIm * rightIm
+
+        outIm = _mm256_fmadd_ps(leftRe, rightIm, outIm);   // outIm += leftRe * rightIm
+        outIm = _mm256_fmadd_ps(leftIm, rightRe, outIm);   // outIm += leftIm * rightRe
+
+        // Write output back to memory. 
+        // Reinterpret cast the float location to write back to as __m256
+        _mm256_store_ps(output, outRe);
+        _mm256_store_ps((output + halfSize), outIm);
+
+        // Advance all the float pointers by 8
+        left   += 8;
+        right  += 8;
+        output += 8;
     }
 
     // Take care of the 0th bin/Nyquist thing from earlier. 
-    output[0] = tempFloatA;
-    output[halfSize] = tempFloatB;
+    _output[0] = tempFloatA;
+    _output[halfSize] = tempFloatB;
 }
 
 inline void complexMultiplication(float* __restrict output,
                                   const float* __restrict left,
-                                  const float*__restrict right,
+                                  const float* __restrict right,
                                   int numElements,
                                   bool useOptimizedCode,
                                   float& tempA, float& tempB)
@@ -128,6 +143,6 @@ inline void complexMultiplication(float* __restrict output,
         complexMultiplicationSIMD(output, left, right, numElements, tempA, tempB);
     else
     {
-        noOptComplexMult(output, left, right, numElements);
+        juceVectorComplexMult(output, left, right, numElements);
     }
 }

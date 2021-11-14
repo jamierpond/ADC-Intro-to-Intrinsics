@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 
 #include "FdlConvolution.h"
+#include "../../SIMD Functions/PondSIMDFunctions.h"
 
 //==============================================================================
 /**

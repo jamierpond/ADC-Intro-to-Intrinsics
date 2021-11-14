@@ -11,39 +11,41 @@
 #pragma once
 #include "SIMDHelpers.h"
 
-inline void multiplyAdd(float* output, const float* left, const float* right, int numElements)
+inline void multiply(float* output, const float* left, const float* right, int numElements)
 {
     for (int i = 0; i < numElements; i++)
     {
-        *output = *left * *right;
-        output++;
-        left++;
-        right++;
+        output[i] = left[i] * right[i];
     }
 }
 
-inline void multiplyAddSIMD(float* __restrict output, const float* __restrict left, const float* __restrict right, int numElements)
+inline void multiplySIMD(float* __restrict output, const float* __restrict left, const float* __restrict right, int numElements)
 {
     int oddNumElementsToDo = numElements % 8;
     if (oddNumElementsToDo != 0)
     {
-        multiplyAdd(output, left, right, oddNumElementsToDo);
+        multiply(output, left, right, oddNumElementsToDo);
         output += oddNumElementsToDo;
-        left += oddNumElementsToDo;
-        right += oddNumElementsToDo;
+        left   += oddNumElementsToDo;
+        right  += oddNumElementsToDo;
         numElements -= oddNumElementsToDo;
     }
 
-    auto* outputSIMD = getSIMDPointer(output);
-    auto* leftSIMD = getConstSIMDPointer(left);
-    auto* rightSIMD = getConstSIMDPointer(right);
+    __m256 _out, _left, _right;
 
-    for (int i = 0; i < numElements; i += 8)
+    const int numSIMD = numElements / 8;
+
+    for (int i = 0; i < numSIMD; i++)
     {
-        *outputSIMD = _mm256_mul_ps(*leftSIMD, *rightSIMD);
-        outputSIMD++;
-        leftSIMD++;
-        rightSIMD++;
+        _out   = _mm256_load_ps(output);
+        _left  = _mm256_load_ps(left);
+        _right = _mm256_load_ps(right);
+        _out   = _mm256_mul_ps(_left, _right);
+        _mm256_store_ps(output, _out);
+
+        output += 8;
+        left   += 8;
+        right  += 8;
     }
 }
 

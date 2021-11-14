@@ -93,7 +93,7 @@
                        vstBinaryLocation="C:/vstplugins"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="SIMD-Pond-Convolution"
                        enablePluginBinaryCopyStep="1" vstBinaryLocation="C:/vstplugins"
-                       alwaysGenerateDebugSymbols="0" optimisation="4"/>
+                       alwaysGenerateDebugSymbols="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../../SDKs/JUCE/modules"/>

@@ -122,10 +122,10 @@ inline void deinterleave(float* __restrict deinterleavedOutput, const float* __r
         *deintTop    = *intlOdd;
 
         intlEven += 2;
-        intlOdd += 2;
+        intlOdd  += 2;
 
         deintBottom += 1;
-        deintTop += 1;
+        deintTop    += 1;
     }
 }
 

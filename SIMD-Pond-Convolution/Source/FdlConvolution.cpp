@@ -9,7 +9,7 @@
 */
 
 #include "FdlConvolution.h"
-
+#include "../../SIMD Functions/PondSIMDFunctions.h"
 
 void FdlConvolver::process(int cachedInputBufferPointer, 
                            int cachedOuputBufferPointer,
@@ -24,8 +24,8 @@ void FdlConvolver::process(int cachedInputBufferPointer,
         auto* bufferToProcessData = bufferToProcess.getWritePointer(channel);
 
         // Clear input buffer and output buffers...
-        fillWithZeros(bufferToProcessData, mFftSize);
-        fillWithZeros(reinterpret_cast<float*>(outputData.data()), mFftSize);
+        fillWithZeros(bufferToProcessData, mFftSize, shouldUseOptimizedFunction);
+        fillWithZeros(reinterpret_cast<float*>(outputData.data()), mFftSize, shouldUseOptimizedFunction);
 
         // Copy unwrapped data from the input buffer.
         inputBuffer->getFromCircularBuffer(channel, mFftSize, bufferToProcess, true, cachedInputBufferPointer);
@@ -46,11 +46,11 @@ void FdlConvolver::process(int cachedInputBufferPointer,
             // TODO try deinterleaved, but with that simd pragma. 
             const int slotToUse = modulo(mReadPosition - slot, numActiveSlots);
             complexMultiplication(reinterpret_cast<float*>(outputData.data()),
-                                 (fdl[slotToUse][channel].data()),
-                                 (irSegments[slot]->complexPartition[channel].data()),
-                                 mFftSize,
-                                 shouldUseOptimizedFunction, 
-                                 tempA, tempB);
+                                  (fdl[slotToUse][channel].data()),
+                                  (irSegments[slot]->complexPartition[channel].data()),
+                                  mFftSize,
+                                  shouldUseOptimizedFunction, 
+                                  tempA, tempB);
         }
 
         // Interleave the data into complex.h format for pffft. 
@@ -62,7 +62,10 @@ void FdlConvolver::process(int cachedInputBufferPointer,
 
         // Scale the output!
         float gain = 8.0f / (sqrtf(hostSampleRate) * mFftSize);
-        bufferToProcess.applyGain(channel, 0, bufferToProcess.getNumSamples(), gain);
+        if (shouldUseOptimizedFunction)
+            multiply(bufferToProcessData, gain, bufferToProcess.getNumSamples());
+        else
+            bufferToProcess.applyGain(channel, 0, bufferToProcess.getNumSamples(), gain);
 
         // Return the output to the output buffer for reading. 
         // TODO, we might be able to bin off the input and output buffers entirely, not sure. 
@@ -109,14 +112,13 @@ void FdlConvolver::setup()
             irArray.push_back(impulseResponseBuffer);
         }
 
-
-
         int nextMultipleOfHeadSize = irArray[i].getNumSamples() + (headSize - irArray[i].getNumSamples() % headSize);
         irArray[i].setSize(irArray[i].getNumChannels(), nextMultipleOfHeadSize, true, true, false);
         largestNumSamples = std::max(largestNumSamples, nextMultipleOfHeadSize);
     }
 
-    float minRMS = 10000.0f;
+    // We don't need this because we're only using one impulse repsonse in this plugin!
+    /*float minRMS = 10000.0f;
     for (int i = 0; i < rmsValues.size(); i++)
         minRMS = juce::jmin(minRMS, rmsValues[i]);
 
@@ -128,7 +130,7 @@ void FdlConvolver::setup()
         float targetGain = juce::Decibels::decibelsToGain(differenceDB);
         DBG(targetGain);
         irArray[i].applyGain(targetGain);
-    }
+    }*/
 
     largestNumSamples = pffft::nextPowerOfTwo(largestNumSamples);
     numSlots = largestNumSamples / headSize;
@@ -178,7 +180,7 @@ void FdlConvolver::updateImpulseResponse(float decayValue, int _targetIr)
             auto* tempSegmentData = temporarySegment.getWritePointer(channel);
 
             // Multiply the curve data by the irChannelData, and place it into the temporary segmentData. 
-            multiplyAddSIMD(tempSegmentData, irChannelData, decayCurveData, headSize);
+            multiplySIMD(tempSegmentData, irChannelData, decayCurveData, headSize);
 
             irSampleCounter[channel] += headSize;
         }
@@ -208,8 +210,8 @@ void FdlConvolver::updateImpulseResponse(float decayValue, int _targetIr)
     {
         for (int channel = 0; channel < numChannels; channel++)
         {
-            fillWithZerosSIMD(reinterpret_cast<float*>(fdl[slotToClear][channel].data()),
-                (int)fdl[slotToClear][channel].size());
+            fillWithZeros(reinterpret_cast<float*>(fdl[slotToClear][channel].data()),
+                (int)fdl[slotToClear][channel].size(), shouldUseOptimizedFunction);
         }
     }
 }

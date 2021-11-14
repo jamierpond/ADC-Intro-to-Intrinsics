@@ -161,11 +161,13 @@ void SIMDPondConvolutionAudioProcessor::processBlock (juce::AudioBuffer<float>& 
 
     outputBuffer.advanceWritePosition(bufferSize);
 
-    buffer.clear();
+    
 
     // Copy the output buffer to the buffer to pass back to the DAW. 
     for (int channel = 0; channel < buffer.getNumChannels(); channel++)
     {
+        auto bufferData = buffer.getWritePointer(channel);
+        fillWithZerosSIMD(bufferData, buffer.getNumSamples());
         outputBuffer.getFromCircularBuffer(channel, buffer.getNumSamples(), buffer, false, outputBuffer.getReadPosition(), true);
     }
 
